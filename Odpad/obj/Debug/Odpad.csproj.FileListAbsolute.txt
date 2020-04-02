@@ -1,0 +1,10 @@
+C:\Users\ТАРАС\source\repos\Odpad\Odpad\bin\Debug\Odpad.exe.config
+C:\Users\ТАРАС\source\repos\Odpad\Odpad\bin\Debug\Odpad.exe
+C:\Users\ТАРАС\source\repos\Odpad\Odpad\bin\Debug\Odpad.pdb
+C:\Users\ТАРАС\source\repos\Odpad\Odpad\obj\Debug\Odpad.csprojAssemblyReference.cache
+C:\Users\ТАРАС\source\repos\Odpad\Odpad\obj\Debug\Odpad.MainNotepadFrm.resources
+C:\Users\ТАРАС\source\repos\Odpad\Odpad\obj\Debug\Odpad.Properties.Resources.resources
+C:\Users\ТАРАС\source\repos\Odpad\Odpad\obj\Debug\Odpad.csproj.GenerateResource.cache
+C:\Users\ТАРАС\source\repos\Odpad\Odpad\obj\Debug\Odpad.csproj.CoreCompileInputs.cache
+C:\Users\ТАРАС\source\repos\Odpad\Odpad\obj\Debug\Odpad.exe
+C:\Users\ТАРАС\source\repos\Odpad\Odpad\obj\Debug\Odpad.pdb
