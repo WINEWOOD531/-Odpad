@@ -159,27 +159,73 @@ namespace Odpad
             cd.ShowDialog();
             MainRichTextBox.SelectionColor = cd.Color;
         }
+
+        #region выравнивание
+
+        private void centerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectionAlignment = HorizontalAlignment.Center;
+        }
+
+        private void leftToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectionAlignment = HorizontalAlignment.Left;
+        }
+
+        private void rightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectionAlignment = HorizontalAlignment.Right;
+        }
+        #endregion
+
         #endregion
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog() {Filter="Text documents| *.txt",ValidateNames=true,Multiselect=false })
+            #region
+            //using (OpenFileDialog ofd = new OpenFileDialog() {Filter="Text documents| *.txt",ValidateNames=true,Multiselect=false })
+            //{
+            //    if (ofd.ShowDialog() == DialogResult.OK)
+            //    {
+            //        try
+            //        {
+            //            using (StreamReader sr = new StreamReader(ofd.FileName))
+            //            {
+            //                path = ofd.FileName;
+            //                Task<string> text = sr.ReadToEndAsync();
+            //                MainRichTextBox.Text = text.Result;
+            //            }
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //        }
+            //    }
+            //}
+            #endregion
+            using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "RTF files|*.rtf|Text documents| *.txt|All files|*.*", ValidateNames = true, Multiselect = false })
             {
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        using (StreamReader sr = new StreamReader(ofd.FileName))
-                        {
-                            path = ofd.FileName;
-                            Task<string> text = sr.ReadToEndAsync();
-                            MainRichTextBox.Text = text.Result;
-                        }
+                        //using (StreamReader sr = new StreamReader(ofd.FileName))
+                        //{
+                        //    path = ofd.FileName;
+                        //    Task<string> text = sr.ReadToEndAsync();
+                        //    MainRichTextBox.Text = text.Result;
+                        //}
+                        MainRichTextBox.LoadFile(ofd.FileName, RichTextBoxStreamType.RichText);
                     }
+                    //catch (Exception ex)
+                    //{
+                    //    MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //}
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MainRichTextBox.LoadFile(ofd.FileName, RichTextBoxStreamType.PlainText);
                     }
+                    this.Text = ofd.FileName;
                 }
             }
 
@@ -189,17 +235,21 @@ namespace Odpad
         {
             if (string.IsNullOrEmpty(path))
             {
-                using (SaveFileDialog sfd=new SaveFileDialog() { Filter = "Text documents| *.txt", ValidateNames = true })
+                using (SaveFileDialog sfd=new SaveFileDialog() { Filter = "RTF files|*.rtf|Text documents| *.txt|All files|*.*", ValidateNames = true })
                 {
                     if (sfd.ShowDialog() == DialogResult.OK)
-                    {
-                        try {
-                            path = sfd.FileName;
-                        using (StreamWriter sw = new StreamWriter(sfd.FileName))
+                    {//=========================Зберігає без кодування
+                        //MainRichTextBox.SaveFile(sfd.FileName);
+                        //this.Text = sfd.FileName;
+                        //--------------------------------------------------------------
+                        try
                         {
-                            await sw.WriteLineAsync(MainRichTextBox.Text);
+                            path = sfd.FileName;
+                            using (StreamWriter sw = new StreamWriter(sfd.FileName))
+                            {
+                                await sw.WriteLineAsync(MainRichTextBox.Text);
+                            }
                         }
-                    }
                         catch (Exception ex)
                         {
                             MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -225,7 +275,7 @@ namespace Odpad
 
         private async void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "Text documents| *.txt", ValidateNames = true })
+            using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "RTF files|*.rtf|Text documents| *.txt|All files|*.*", ValidateNames = true })
             {
                
                     if (sfd.ShowDialog() == DialogResult.OK)
@@ -246,5 +296,7 @@ namespace Odpad
                 
             }
         }
+      
+
     }
 }
