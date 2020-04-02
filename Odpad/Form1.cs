@@ -7,11 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Odpad
 {
     public partial class MainNotepadFrm : Form
     {
+        public string path;
         public MainNotepadFrm()
         {
             InitializeComponent();
@@ -86,7 +88,7 @@ namespace Odpad
                 redoToolStripMenuItem.Enabled = false;
             }
         }
-
+        #region Font
         private void cutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MainRichTextBox.Cut();
@@ -156,6 +158,93 @@ namespace Odpad
             ColorDialog cd = new ColorDialog();
             cd.ShowDialog();
             MainRichTextBox.SelectionColor = cd.Color;
+        }
+        #endregion
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog() {Filter="Text documents| *.txt",ValidateNames=true,Multiselect=false })
+            {
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (StreamReader sr = new StreamReader(ofd.FileName))
+                        {
+                            path = ofd.FileName;
+                            Task<string> text = sr.ReadToEndAsync();
+                            MainRichTextBox.Text = text.Result;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+
+        }
+
+        private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                using (SaveFileDialog sfd=new SaveFileDialog() { Filter = "Text documents| *.txt", ValidateNames = true })
+                {
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        try {
+                            path = sfd.FileName;
+                        using (StreamWriter sw = new StreamWriter(sfd.FileName))
+                        {
+                            await sw.WriteLineAsync(MainRichTextBox.Text);
+                        }
+                    }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    using (StreamWriter sw = new StreamWriter(path))
+                    {
+                        await sw.WriteLineAsync(MainRichTextBox.Text);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private async void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "Text documents| *.txt", ValidateNames = true })
+            {
+               
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (StreamWriter sw = new StreamWriter(sfd.FileName))
+                        {
+                            await sw.WriteLineAsync(MainRichTextBox.Text);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message,"Message",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    }
+                }
+                
+                
+            }
         }
     }
 }
