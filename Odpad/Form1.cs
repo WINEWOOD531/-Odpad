@@ -88,6 +88,7 @@ namespace Odpad
                 redoToolStripMenuItem.Enabled = false;
             }
         }
+
         #region Font
         private void cutToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -121,22 +122,96 @@ namespace Odpad
 
         private void boldToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MainRichTextBox.SelectionFont = new Font(MainRichTextBox.Font, FontStyle.Bold);
+            //MainRichTextBox.SelectionFont = new Font(MainRichTextBox.Font, FontStyle.Bold); //працює
+            #region another variant
+            if (MainRichTextBox.SelectionFont != null)
+            {
+                System.Drawing.Font currentFont = MainRichTextBox.SelectionFont;
+                System.Drawing.FontStyle newFontStyle;
+                if (MainRichTextBox.SelectionFont.Bold == true)
+                {
+                    newFontStyle = FontStyle.Regular;
+                }
+                else
+                {
+                    newFontStyle = FontStyle.Bold;
+                }
+
+                MainRichTextBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
+                CheckMenuFontCharackterStyle();
+            }
+            #endregion
+
         }
 
         private void italicToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MainRichTextBox.SelectionFont = new Font(MainRichTextBox.Font, FontStyle.Italic);
+            //MainRichTextBox.SelectionFont = new Font(MainRichTextBox.Font, FontStyle.Italic);//без помітки
+            #region another variant
+            if (MainRichTextBox.SelectionFont != null)
+            {
+                System.Drawing.Font currentFont = MainRichTextBox.SelectionFont;
+                System.Drawing.FontStyle newFontStyle;
+                if (MainRichTextBox.SelectionFont.Italic == true)
+                {
+                    newFontStyle = FontStyle.Regular;
+                }
+                else
+                {
+                    newFontStyle = FontStyle.Italic;
+                }
+
+                MainRichTextBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
+                CheckMenuFontCharackterStyle();
+            }
+            #endregion
         }
 
         private void underlineToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MainRichTextBox.SelectionFont = new Font(MainRichTextBox.Font, FontStyle.Underline);
+            //MainRichTextBox.SelectionFont = new Font(MainRichTextBox.Font, FontStyle.Underline);
+            #region another variant
+            if (MainRichTextBox.SelectionFont != null)
+            {
+                System.Drawing.Font currentFont = MainRichTextBox.SelectionFont;
+                System.Drawing.FontStyle newFontStyle;
+                if (MainRichTextBox.SelectionFont.Underline == true)
+                {
+                    newFontStyle = FontStyle.Regular;
+                }
+                else
+                {
+                    newFontStyle = FontStyle.Underline;
+                }
+
+                MainRichTextBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
+                CheckMenuFontCharackterStyle();
+            }
+            #endregion
+
         }
 
         private void strikeThroughToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MainRichTextBox.SelectionFont = new Font(MainRichTextBox.Font, FontStyle.Strikeout);
+            //MainRichTextBox.SelectionFont = new Font(MainRichTextBox.Font, FontStyle.Strikeout);
+            #region another variant
+            if (MainRichTextBox.SelectionFont != null)
+            {
+                System.Drawing.Font currentFont = MainRichTextBox.SelectionFont;
+                System.Drawing.FontStyle newFontStyle;
+                if (MainRichTextBox.SelectionFont.Strikeout == true)
+                {
+                    newFontStyle = FontStyle.Regular;
+                }
+                else
+                {
+                    newFontStyle = FontStyle.Strikeout;
+                }
+
+                MainRichTextBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
+                CheckMenuFontCharackterStyle();
+            }
+            #endregion
         }
 
         private void normalToolStripMenuItem_Click(object sender, EventArgs e)
@@ -179,6 +254,7 @@ namespace Odpad
         #endregion
 
         #endregion
+
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -296,7 +372,47 @@ namespace Odpad
                 
             }
         }
-      
+
+        #region check style
+        private void CheckMenuFontCharackterStyle()
+        {
+            if (MainRichTextBox.SelectionFont.Bold==true)
+            {
+                boldToolStripMenuItem.Checked = true;
+            }
+            else {
+                boldToolStripMenuItem.Checked = false;
+            }
+
+            if (MainRichTextBox.SelectionFont.Italic == true)
+            {
+                italicToolStripMenuItem.Checked = true;
+            }
+            else
+            {
+                italicToolStripMenuItem.Checked = false;
+            }
+
+            if (MainRichTextBox.SelectionFont.Strikeout == true)
+            {
+                strikeThroughToolStripMenuItem.Checked = true;
+            }
+            else
+            {
+                strikeThroughToolStripMenuItem.Checked = false;
+            }
+
+            if (MainRichTextBox.SelectionFont.Underline == true)
+            {
+                underlineToolStripMenuItem.Checked = true;
+            }
+            else
+            {
+                underlineToolStripMenuItem.Checked = false;
+            }
+
+        }
+        #endregion
 
     }
 }
