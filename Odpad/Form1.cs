@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace Odpad
 {
@@ -55,6 +57,30 @@ namespace Odpad
             undoToolStripMenuItem.Enabled = true;
             
         }
+
+        private void insertImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "Images |*.bmp;*.jpg;*.png;*.gif;*.jpeg", ValidateNames = true, Multiselect = false })
+            {
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        System.Drawing.Image img = System.Drawing.Image.FromFile(ofd.FileName);
+                        Clipboard.SetImage(img);
+                        MainRichTextBox.Paste();
+                        MainRichTextBox.Focus();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error");
+                    }
+                }
+            }
+
+
+        }
+
 
         private void MainRichTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -137,7 +163,7 @@ namespace Odpad
                     newFontStyle = FontStyle.Bold;
                 }
 
-                MainRichTextBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
+                MainRichTextBox.SelectionFont = new System.Drawing.Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
                 CheckMenuFontCharackterStyle();
             }
             #endregion
@@ -161,7 +187,7 @@ namespace Odpad
                     newFontStyle = FontStyle.Italic;
                 }
 
-                MainRichTextBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
+                MainRichTextBox.SelectionFont = new System.Drawing.Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
                 CheckMenuFontCharackterStyle();
             }
             #endregion
@@ -184,7 +210,7 @@ namespace Odpad
                     newFontStyle = FontStyle.Underline;
                 }
 
-                MainRichTextBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
+                MainRichTextBox.SelectionFont = new System.Drawing.Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
                 CheckMenuFontCharackterStyle();
             }
             #endregion
@@ -208,7 +234,7 @@ namespace Odpad
                     newFontStyle = FontStyle.Strikeout;
                 }
 
-                MainRichTextBox.SelectionFont = new Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
+                MainRichTextBox.SelectionFont = new System.Drawing.Font(currentFont.FontFamily, currentFont.Size, newFontStyle);
                 CheckMenuFontCharackterStyle();
             }
             #endregion
@@ -216,7 +242,7 @@ namespace Odpad
 
         private void normalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MainRichTextBox.SelectionFont = new Font(MainRichTextBox.Font, FontStyle.Regular);
+            MainRichTextBox.SelectionFont = new System.Drawing.Font(MainRichTextBox.Font, FontStyle.Regular);
         }
 
         private void fontDialogToolStripMenuItem_Click(object sender, EventArgs e)
@@ -443,27 +469,30 @@ namespace Odpad
         }
         #endregion
 
-        private void insertImageToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void saveInPdfToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "Images |*.bmp;*.jpg;*.png;*.gif;*.jpeg", ValidateNames = true, Multiselect = false })
+            using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "PDF file| *.pdf", ValidateNames = true })
             {
-                if (ofd.ShowDialog() == DialogResult.OK)
+                if (sfd.ShowDialog() == DialogResult.OK)
                 {
+                    iTextSharp.text.Document doc = new iTextSharp.text.Document(PageSize.A4.Rotate());
                     try
                     {
-                        Image img = Image.FromFile(ofd.FileName);
-                        Clipboard.SetImage(img);
-                        MainRichTextBox.Paste();
-                        MainRichTextBox.Focus();
+                        PdfWriter.GetInstance(doc,new FileStream(sfd.FileName,FileMode.Create));
+                        doc.Open();
+                        doc.Add(new iTextSharp.text.Paragraph(MainRichTextBox.Text));
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Error");
+                        MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                        doc.Close();
                     }
                 }
             }
-
-
         }
     }
 }
