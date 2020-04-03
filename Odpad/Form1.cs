@@ -445,12 +445,24 @@ namespace Odpad
 
         private void insertImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Image logoimage;
-            logoimage = Image.FromFile(String.Concat(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), @"1.png"));
+            using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "Images |*.bmp;*.jpg;*.png;*.gif;*.jpeg", ValidateNames = true, Multiselect = false })
+            {
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        Image img = Image.FromFile(ofd.FileName);
+                        Clipboard.SetImage(img);
+                        MainRichTextBox.Paste();
+                        MainRichTextBox.Focus();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error");
+                    }
+                }
+            }
 
-            Clipboard.SetImage(logoimage);
-            MainRichTextBox.Paste(); ;
-            Clipboard.Clear();
 
         }
     }
