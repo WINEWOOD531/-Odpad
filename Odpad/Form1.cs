@@ -413,6 +413,45 @@ namespace Odpad
 
         }
         #endregion
+        #region Search
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            string[] words = txtSearch.Text.Split(',');
+            foreach (string word in words)
+            {
+                int startIndex = 0;
+                while (startIndex<MainRichTextBox.TextLength)
+                {
+                    int wordStartIndex = MainRichTextBox.Find(word,startIndex,RichTextBoxFinds.None);
+                    if (wordStartIndex != -1)
+                    {
+                        MainRichTextBox.SelectionStart = wordStartIndex;
+                        MainRichTextBox.SelectionLength = word.Length;
+                        MainRichTextBox.SelectionBackColor = Color.Aqua;
+                    }
+                    else break;
+                    startIndex = wordStartIndex + word.Length;
+                }
+            }
+        }
 
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectionStart = 0;
+            MainRichTextBox.SelectAll();
+            MainRichTextBox.SelectionBackColor = Color.White;
+        }
+        #endregion
+
+        private void insertImageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Image logoimage;
+            logoimage = Image.FromFile(String.Concat(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), @"1.png"));
+
+            Clipboard.SetImage(logoimage);
+            MainRichTextBox.Paste(); ;
+            Clipboard.Clear();
+
+        }
     }
 }

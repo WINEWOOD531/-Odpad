@@ -192,6 +192,7 @@
     <None Include="Resources\align center.png" />
     <None Include="Resources\align right.png" />
     <None Include="Resources\align left.png" />
+    <None Include="Resources\picture.png" />
     <Content Include="text-128.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
