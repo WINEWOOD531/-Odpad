@@ -19,6 +19,26 @@ namespace Odpad
         public MainNotepadFrm()
         {
             InitializeComponent();
+            MainRichTextBox.DragDrop += new DragEventHandler(MainRichTextBox_DragDrop);
+            MainRichTextBox.AllowDrop = true;
+        }
+        /// <summary>
+        /// Drag&Drop option
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainRichTextBox_DragDrop(object sender, DragEventArgs e)
+        {
+            object filename = e.Data.GetData("FileDrop");
+            if (filename != null)
+            {
+                var list = filename as string[];
+                if (list != null && !string.IsNullOrWhiteSpace(list[0]))
+                {
+                    MainRichTextBox.Clear();
+                    MainRichTextBox.LoadFile(list[0], RichTextBoxStreamType.PlainText);
+                }
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
