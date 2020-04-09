@@ -10,18 +10,29 @@ using System.Windows.Forms;
 using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using System.Speech.Synthesis;
 
 namespace Odpad
 {
     public partial class MainNotepadFrm : Form
     {
         public string path;
+        SpeechSynthesizer speech;
+        private int indent = 10;
         public MainNotepadFrm()
         {
             InitializeComponent();
             MainRichTextBox.DragDrop += new DragEventHandler(MainRichTextBox_DragDrop);
             MainRichTextBox.AllowDrop = true;
+            speech = new SpeechSynthesizer();
         }
+
+        public int INDENT
+        {
+            get { return indent; }
+            set { indent = value; }
+        }
+
         /// <summary>
         /// Drag&Drop option
         /// </summary>
@@ -39,6 +50,7 @@ namespace Odpad
                     MainRichTextBox.LoadFile(list[0], RichTextBoxStreamType.PlainText);
                 }
             }
+
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -80,24 +92,51 @@ namespace Odpad
 
         private void insertImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "Images |*.bmp;*.jpg;*.png;*.gif;*.jpeg", ValidateNames = true, Multiselect = false })
+            //using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "Images |*.bmp;*.jpg;*.png;*.gif;*.jpeg", ValidateNames = true, Multiselect = false })
+            //{
+            //    if (ofd.ShowDialog() == DialogResult.OK)
+            //    {
+            //        try
+            //        {
+            //            System.Drawing.Image img = System.Drawing.Image.FromFile(ofd.FileName);
+            //            Clipboard.SetImage(img);
+            //            MainRichTextBox.Paste();
+            //            MainRichTextBox.Focus();
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            MessageBox.Show("Error");
+            //        }
+            //    }
+            //}
+
+
+            using (OpenFileDialog dlg = new OpenFileDialog())
             {
-                if (ofd.ShowDialog() == DialogResult.OK)
+                dlg.Title = "Insert picture";
+                dlg.DefaultExt = "jpg";
+                dlg.Filter = "Bitmap Files|*.bmp|JPEG Files|*.jpg|GIF Files|*.gif|All files|*.*";
+                dlg.FilterIndex = 1;
+                if (dlg.ShowDialog() == DialogResult.OK)
                 {
                     try
                     {
-                        System.Drawing.Image img = System.Drawing.Image.FromFile(ofd.FileName);
-                        Clipboard.SetImage(img);
-                        MainRichTextBox.Paste();
-                        MainRichTextBox.Focus();
+                        string strImagePath = dlg.FileName;
+                        System.Drawing.Image img = System.Drawing.Image.FromFile(strImagePath);
+                        Clipboard.SetDataObject(img);
+                        DataFormats.Format df;
+                        df = DataFormats.GetFormat(DataFormats.Bitmap);
+                        if (this.MainRichTextBox.CanPaste(df))
+                        {
+                            this.MainRichTextBox.Paste(df);
+                        }
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        MessageBox.Show("Error");
+                        MessageBox.Show("Unable to insert image.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
-
 
         }
 
@@ -355,42 +394,64 @@ namespace Odpad
 
         private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(path))
+            //if (string.IsNullOrEmpty(path))
+            //{
+            //    using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "RTF files|*.rtf|Text documents| *.txt|All files|*.*", ValidateNames = true })
+            //    {
+            //        if (sfd.ShowDialog() == DialogResult.OK)
+            //        {//=========================Зберігає без кодування
+            //            //MainRichTextBox.SaveFile(sfd.FileName);
+            //            //this.Text = sfd.FileName;
+            //            //--------------------------------------------------------------
+            //            try
+            //            {
+            //                path = sfd.FileName;
+            //                using (StreamWriter sw = new StreamWriter(sfd.FileName))
+            //                {
+            //                    await sw.WriteLineAsync(MainRichTextBox.Text);
+            //                }
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //            }
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    try
+            //    {
+            //        using (StreamWriter sw = new StreamWriter(path))
+            //        {
+            //            await sw.WriteLineAsync(MainRichTextBox.Text);
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    }
+            //}
+
+            using (SaveFileDialog dlg = new SaveFileDialog())
             {
-                using (SaveFileDialog sfd=new SaveFileDialog() { Filter = "RTF files|*.rtf|Text documents| *.txt|All files|*.*", ValidateNames = true })
+                dlg.Filter = "Rich text format|*.rtf";
+                dlg.FilterIndex = 0;
+                dlg.OverwritePrompt = true;
+                if (dlg.ShowDialog() == DialogResult.OK)
                 {
-                    if (sfd.ShowDialog() == DialogResult.OK)
-                    {//=========================Зберігає без кодування
-                        //MainRichTextBox.SaveFile(sfd.FileName);
-                        //this.Text = sfd.FileName;
-                        //--------------------------------------------------------------
-                        try
-                        {
-                            path = sfd.FileName;
-                            using (StreamWriter sw = new StreamWriter(sfd.FileName))
-                            {
-                                await sw.WriteLineAsync(MainRichTextBox.Text);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                try
-                {
-                    using (StreamWriter sw = new StreamWriter(path))
+                    try
                     {
-                        await sw.WriteLineAsync(MainRichTextBox.Text);
+                        MainRichTextBox.SaveFile(dlg.FileName, RichTextBoxStreamType.RichText);
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    catch (IOException exc)
+                    {
+                        MessageBox.Show("Error writing file: \n" + exc.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    catch (ArgumentException exc_a)
+                    {
+                        MessageBox.Show("Error writing file: \n" + exc_a.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -514,5 +575,67 @@ namespace Odpad
                 }
             }
         }
+        /// <summary>
+        /// Print Document
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            e.Graphics.DrawString(MainRichTextBox.Text,new System.Drawing.Font("Times New Roman", 14,FontStyle.Bold),Brushes.Black,new PointF(100,100));
+        }
+
+        private void printToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (printPreviewDialog1.ShowDialog()==DialogResult.OK)
+            {
+                printDocument1.Print();
+            }
+        }
+
+
+
+        /// <summary>
+        /// Speech text option
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void speakBtn_Click(object sender, EventArgs e)
+        {
+            if (MainRichTextBox.Text != "")
+            {
+                speech.SpeakAsync(MainRichTextBox.Text);
+            }
+        }
+
+        private void pauseBtn_Click(object sender, EventArgs e)
+        {
+            if (speech.State == SynthesizerState.Speaking)
+            {
+                speech.Pause();
+            }
+        }
+
+        private void resumeBtn_Click(object sender, EventArgs e)
+        {
+            if (speech.State == SynthesizerState.Paused)
+            {
+                speech.Resume();
+            }
+        }
+
+        private void bulletsBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                    MainRichTextBox.SelectionBullet = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString(), "Error");
+            }
+        }
     }
+    
 }
