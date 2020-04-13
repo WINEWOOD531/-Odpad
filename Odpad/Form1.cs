@@ -25,6 +25,13 @@ namespace Odpad
             MainRichTextBox.DragDrop += new DragEventHandler(MainRichTextBox_DragDrop);
             MainRichTextBox.AllowDrop = true;
             speech = new SpeechSynthesizer();
+            if (Control.IsKeyLocked(Keys.CapsLock))
+            {
+                capsToolStripStatusLabel1.Text = "Caps ON";
+            }
+            else {
+                capsToolStripStatusLabel1.Text = "Caps OFF";
+            }
         }
 
         public int INDENT
@@ -51,6 +58,7 @@ namespace Odpad
                 }
             }
 
+
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -63,11 +71,16 @@ namespace Odpad
         {
             MessageBox.Show("All Rights reserved by the GRW","Help",MessageBoxButtons.OK,MessageBoxIcon.Information);
         }
-
+/// <summary>
+/// Create New File
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MainRichTextBox.Text = "";
             //MainRichTextBox.Clear();
+            MessageToolStripStatusLabel1.Text = "New Document is created";
         }
 
         private void printPreviewToolStripMenuItem_Click(object sender, EventArgs e)
@@ -92,6 +105,7 @@ namespace Odpad
 
         private void insertImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            #region
             //using (OpenFileDialog ofd = new OpenFileDialog() { Filter = "Images |*.bmp;*.jpg;*.png;*.gif;*.jpeg", ValidateNames = true, Multiselect = false })
             //{
             //    if (ofd.ShowDialog() == DialogResult.OK)
@@ -109,7 +123,7 @@ namespace Odpad
             //        }
             //    }
             //}
-
+            #endregion
 
             using (OpenFileDialog dlg = new OpenFileDialog())
             {
@@ -389,11 +403,12 @@ namespace Odpad
                     this.Text = ofd.FileName;
                 }
             }
-
+            MessageToolStripStatusLabel1.Text = "File is Opened";
         }
 
         private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            #region saving without image
             //if (string.IsNullOrEmpty(path))
             //{
             //    using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "RTF files|*.rtf|Text documents| *.txt|All files|*.*", ValidateNames = true })
@@ -432,7 +447,7 @@ namespace Odpad
             //        MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
             //    }
             //}
-
+            #endregion
             using (SaveFileDialog dlg = new SaveFileDialog())
             {
                 dlg.Filter = "Rich text format|*.rtf";
@@ -454,6 +469,7 @@ namespace Odpad
                     }
                 }
             }
+
         }
 
         private async void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -625,17 +641,162 @@ namespace Odpad
             }
         }
 
+        /// <summary>
+        /// Toggle bullets
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void bulletsBtn_Click(object sender, EventArgs e)
         {
             try
             {
-                    MainRichTextBox.SelectionBullet = true;
+                MainRichTextBox.SelectionBullet = true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message.ToString(), "Error");
             }
         }
+
+        private void toolStripButton19_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MainRichTextBox.SelectionBullet = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString(), "Error");
+            }
+        }
+
+/// <summary>
+/// Zoom text
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
+        private void zoomInbtn_Click(object sender, EventArgs e)
+        {
+            if (MainRichTextBox.ZoomFactor < 64.0f - 0.20f)
+            {
+                MainRichTextBox.ZoomFactor += 0.20f;
+                //tstxtZoomFactor.Text = String.Format("{0:F0}", MainRichTextBox.ZoomFactor * 100);
+            }
+        }
+
+        private void zoomOutbtn_Click(object sender, EventArgs e)
+        {
+            if (MainRichTextBox.ZoomFactor > 0.16f + 0.20f)
+            {
+                MainRichTextBox.ZoomFactor -= 0.20f;
+                //tstxtZoomFactor.Text = String.Format("{0:F0}", MainRichTextBox.ZoomFactor * 100);
+            }
+        }
+
+        //private void tstxtZoomFactor_Leave(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        MainRichTextBox.ZoomFactor = Convert.ToSingle(tstxtZoomFactor.Text) / 100;
+        //    }
+        //    catch (FormatException)
+        //    {
+        //        MessageBox.Show("Enter valid number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        tstxtZoomFactor.Focus();
+        //        tstxtZoomFactor.SelectAll();
+        //    }
+        //    catch (OverflowException)
+        //    {
+        //        MessageBox.Show("Enter valid number", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        tstxtZoomFactor.Focus();
+        //        tstxtZoomFactor.SelectAll();
+        //    }
+        //    catch (ArgumentException)
+        //    {
+        //        MessageBox.Show("Zoom factor should be between 20% and 6400%", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //        tstxtZoomFactor.Focus();
+        //        tstxtZoomFactor.SelectAll();
+        //    }
+        //}
+
+        private void NewFileMenu()
+        {
+            //if (isFileDirty)
+            //{
+
+            //}
+        }
+
+        /// <summary>
+        /// Caps ON/OFF indicator
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainRichTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Control.IsKeyLocked(Keys.CapsLock))
+            {
+                capsToolStripStatusLabel1.Text = "Caps ON";
+            }
+            else
+            {
+                capsToolStripStatusLabel1.Text = "Caps OFF";
+            }
+        }
+        #region Text Wrap
+        /// <summary>
+        /// Text Wrap
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //private void textWrapToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    if (textWrapToolStripMenuItem.Checked == true)
+        //    {
+        //        MainRichTextBox.WordWrap = true;
+        //    }
+        //    else
+        //    {
+        //        MainRichTextBox.WordWrap = false;
+        //    }
+        //}
+        #endregion
+
+        #region Context menu   
+        private void normalToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectionFont = new System.Drawing.Font(MainRichTextBox.Font, FontStyle.Regular);
+        }
+
+        private void boldToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectionFont = new System.Drawing.Font(MainRichTextBox.Font, FontStyle.Bold);
+        }
+
+        private void italicToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectionFont = new System.Drawing.Font(MainRichTextBox.Font, FontStyle.Italic);
+        }
+
+        private void underlineToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectionFont = new System.Drawing.Font(MainRichTextBox.Font, FontStyle.Underline);
+        }
+
+        private void undoToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.Undo();
+            undoToolStripMenuItem.Enabled = false;
+            redoToolStripMenuItem.Enabled = true;
+        }
+
+        private void redoToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.Redo();
+            redoToolStripMenuItem.Enabled = false;
+            undoToolStripMenuItem.Enabled = true;
+        }
+        #endregion
     }
-    
+
 }

@@ -206,6 +206,10 @@
     <None Include="Resources\pause.png" />
     <None Include="Resources\Hide-right-icon.png" />
     <None Include="Resources\marked list points.png" />
+    <None Include="Resources\increase.png" />
+    <None Include="Resources\reduce.png" />
+    <None Include="Resources\uncheck-icon-67.png" />
+    <None Include="Resources\pngfuel.com%2832%29.png" />
     <Content Include="text-128.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

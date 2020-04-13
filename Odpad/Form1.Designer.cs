@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainNotepadFrm));
             this.MainRichTextBox = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -90,18 +91,35 @@
             this.pauseBtn = new System.Windows.Forms.ToolStripButton();
             this.resumeBtn = new System.Windows.Forms.ToolStripButton();
             this.bulletsBtn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButton19 = new System.Windows.Forms.ToolStripButton();
+            this.zoomInbtn = new System.Windows.Forms.ToolStripButton();
+            this.zoomOutbtn = new System.Windows.Forms.ToolStripButton();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnClear = new System.Windows.Forms.Button();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
             this.printPreviewDialog1 = new System.Windows.Forms.PrintPreviewDialog();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.MessageToolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.capsToolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.boldToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.italicToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.underlineToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.normalToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+            this.undoToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.redoToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainRichTextBox
             // 
+            this.MainRichTextBox.ContextMenuStrip = this.contextMenuStrip1;
             this.MainRichTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainRichTextBox.EnableAutoDragDrop = true;
             this.MainRichTextBox.Location = new System.Drawing.Point(0, 49);
@@ -110,6 +128,7 @@
             this.MainRichTextBox.TabIndex = 0;
             this.MainRichTextBox.Text = "";
             this.MainRichTextBox.TextChanged += new System.EventHandler(this.MainRichTextBox_TextChanged);
+            this.MainRichTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainRichTextBox_KeyDown);
             // 
             // menuStrip1
             // 
@@ -470,7 +489,10 @@
             this.speakBtn,
             this.pauseBtn,
             this.resumeBtn,
-            this.bulletsBtn});
+            this.bulletsBtn,
+            this.toolStripButton19,
+            this.zoomInbtn,
+            this.zoomOutbtn});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(800, 25);
@@ -700,12 +722,42 @@
             // bulletsBtn
             // 
             this.bulletsBtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bulletsBtn.Image = global::Odpad.Properties.Resources.marked_list_points;
+            this.bulletsBtn.Image = global::Odpad.Properties.Resources.pngfuel_com_32_;
             this.bulletsBtn.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bulletsBtn.Name = "bulletsBtn";
             this.bulletsBtn.Size = new System.Drawing.Size(23, 22);
             this.bulletsBtn.Text = "Bullets";
             this.bulletsBtn.Click += new System.EventHandler(this.bulletsBtn_Click);
+            // 
+            // toolStripButton19
+            // 
+            this.toolStripButton19.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButton19.Image = global::Odpad.Properties.Resources.uncheck_icon_67;
+            this.toolStripButton19.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButton19.Name = "toolStripButton19";
+            this.toolStripButton19.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButton19.Text = "bullet off";
+            this.toolStripButton19.Click += new System.EventHandler(this.toolStripButton19_Click);
+            // 
+            // zoomInbtn
+            // 
+            this.zoomInbtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.zoomInbtn.Image = global::Odpad.Properties.Resources.increase;
+            this.zoomInbtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.zoomInbtn.Name = "zoomInbtn";
+            this.zoomInbtn.Size = new System.Drawing.Size(23, 22);
+            this.zoomInbtn.Text = "Zoom In";
+            this.zoomInbtn.Click += new System.EventHandler(this.zoomInbtn_Click);
+            // 
+            // zoomOutbtn
+            // 
+            this.zoomOutbtn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.zoomOutbtn.Image = global::Odpad.Properties.Resources.reduce;
+            this.zoomOutbtn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.zoomOutbtn.Name = "zoomOutbtn";
+            this.zoomOutbtn.Size = new System.Drawing.Size(23, 22);
+            this.zoomOutbtn.Text = "Zoom Out";
+            this.zoomOutbtn.Click += new System.EventHandler(this.zoomOutbtn_Click);
             // 
             // btnSearch
             // 
@@ -758,11 +810,110 @@
             this.printPreviewDialog1.Name = "printPreviewDialog1";
             this.printPreviewDialog1.Visible = false;
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MessageToolStripStatusLabel1,
+            this.capsToolStripStatusLabel1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 426);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(800, 24);
+            this.statusStrip1.TabIndex = 7;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // MessageToolStripStatusLabel1
+            // 
+            this.MessageToolStripStatusLabel1.AutoSize = false;
+            this.MessageToolStripStatusLabel1.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.MessageToolStripStatusLabel1.BorderStyle = System.Windows.Forms.Border3DStyle.Sunken;
+            this.MessageToolStripStatusLabel1.Name = "MessageToolStripStatusLabel1";
+            this.MessageToolStripStatusLabel1.Size = new System.Drawing.Size(350, 19);
+            this.MessageToolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // capsToolStripStatusLabel1
+            // 
+            this.capsToolStripStatusLabel1.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.capsToolStripStatusLabel1.BorderStyle = System.Windows.Forms.Border3DStyle.Sunken;
+            this.capsToolStripStatusLabel1.Name = "capsToolStripStatusLabel1";
+            this.capsToolStripStatusLabel1.Size = new System.Drawing.Size(61, 19);
+            this.capsToolStripStatusLabel1.Text = "CAPS ON";
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoToolStripMenuItem1,
+            this.redoToolStripMenuItem1,
+            this.toolStripMenuItem4,
+            this.normalToolStripMenuItem1,
+            this.boldToolStripMenuItem1,
+            this.italicToolStripMenuItem1,
+            this.underlineToolStripMenuItem1});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 164);
+            // 
+            // boldToolStripMenuItem1
+            // 
+            this.boldToolStripMenuItem1.Image = global::Odpad.Properties.Resources.bold;
+            this.boldToolStripMenuItem1.Name = "boldToolStripMenuItem1";
+            this.boldToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.boldToolStripMenuItem1.Text = "&Bold";
+            this.boldToolStripMenuItem1.Click += new System.EventHandler(this.boldToolStripMenuItem1_Click);
+            // 
+            // italicToolStripMenuItem1
+            // 
+            this.italicToolStripMenuItem1.Image = global::Odpad.Properties.Resources.italic;
+            this.italicToolStripMenuItem1.Name = "italicToolStripMenuItem1";
+            this.italicToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.italicToolStripMenuItem1.Text = "&Italic";
+            this.italicToolStripMenuItem1.Click += new System.EventHandler(this.italicToolStripMenuItem1_Click);
+            // 
+            // underlineToolStripMenuItem1
+            // 
+            this.underlineToolStripMenuItem1.Image = global::Odpad.Properties.Resources.underline;
+            this.underlineToolStripMenuItem1.Name = "underlineToolStripMenuItem1";
+            this.underlineToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.underlineToolStripMenuItem1.Text = "&Underline";
+            this.underlineToolStripMenuItem1.Click += new System.EventHandler(this.underlineToolStripMenuItem1_Click);
+            // 
+            // normalToolStripMenuItem1
+            // 
+            this.normalToolStripMenuItem1.Image = global::Odpad.Properties.Resources.Normal_Text_icon;
+            this.normalToolStripMenuItem1.Name = "normalToolStripMenuItem1";
+            this.normalToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.normalToolStripMenuItem1.Text = "&Normal";
+            this.normalToolStripMenuItem1.Click += new System.EventHandler(this.normalToolStripMenuItem1_Click);
+            // 
+            // toolStripMenuItem4
+            // 
+            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+            this.toolStripMenuItem4.Size = new System.Drawing.Size(177, 6);
+            // 
+            // undoToolStripMenuItem1
+            // 
+            this.undoToolStripMenuItem1.Image = global::Odpad.Properties.Resources.cancel;
+            this.undoToolStripMenuItem1.Name = "undoToolStripMenuItem1";
+            this.undoToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.undoToolStripMenuItem1.Text = "&Undo";
+            this.undoToolStripMenuItem1.Click += new System.EventHandler(this.undoToolStripMenuItem1_Click);
+            // 
+            // redoToolStripMenuItem1
+            // 
+            this.redoToolStripMenuItem1.Image = global::Odpad.Properties.Resources.back;
+            this.redoToolStripMenuItem1.Name = "redoToolStripMenuItem1";
+            this.redoToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.redoToolStripMenuItem1.Text = "&Redo";
+            this.redoToolStripMenuItem1.Click += new System.EventHandler(this.redoToolStripMenuItem1_Click);
+            // 
             // MainNotepadFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtSearch);
@@ -778,6 +929,9 @@
             this.menuStrip1.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -852,6 +1006,20 @@
         private System.Windows.Forms.ToolStripButton pauseBtn;
         private System.Windows.Forms.ToolStripButton resumeBtn;
         private System.Windows.Forms.ToolStripButton bulletsBtn;
+        private System.Windows.Forms.ToolStripButton toolStripButton19;
+        private System.Windows.Forms.ToolStripButton zoomInbtn;
+        private System.Windows.Forms.ToolStripButton zoomOutbtn;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel MessageToolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel capsToolStripStatusLabel1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem boldToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem normalToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem italicToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem underlineToolStripMenuItem1;
     }
 }
 
