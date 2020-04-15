@@ -586,7 +586,11 @@ namespace Odpad
         }
         #endregion
 
-
+        /// <summary>
+        /// save file in pdf
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void saveInPdfToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "PDF file| *.pdf", ValidateNames = true })
@@ -613,6 +617,8 @@ namespace Odpad
                 }
             }
         }
+
+        #region Print
         /// <summary>
         /// Print Document
         /// </summary>
@@ -631,9 +637,9 @@ namespace Odpad
                 printDocument1.Print();
             }
         }
+        #endregion
 
-
-
+        #region Speech text
         /// <summary>
         /// Speech text option
         /// </summary>
@@ -662,7 +668,9 @@ namespace Odpad
                 speech.Resume();
             }
         }
+        #endregion
 
+        #region Bullets
         /// <summary>
         /// Toggle bullets
         /// </summary>
@@ -691,12 +699,14 @@ namespace Odpad
                 MessageBox.Show(ex.Message.ToString(), "Error");
             }
         }
+        #endregion
 
-/// <summary>
-/// Zoom text
-/// </summary>
-/// <param name="sender"></param>
-/// <param name="e"></param>
+        #region Zoom
+        /// <summary>
+        /// Zoom text
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void zoomInbtn_Click(object sender, EventArgs e)
         {
             if (MainRichTextBox.ZoomFactor < 64.0f - 0.20f)
@@ -740,7 +750,7 @@ namespace Odpad
         //        tstxtZoomFactor.SelectAll();
         //    }
         //}
-
+#endregion
         private void NewFileMenu()
         {
             //if (isFileDirty)
@@ -784,6 +794,11 @@ namespace Odpad
         //}
         #endregion
 
+        /// <summary>
+        /// Contex menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         #region Context menu   
         private void normalToolStripMenuItem1_Click(object sender, EventArgs e)
         {
@@ -817,6 +832,33 @@ namespace Odpad
             MainRichTextBox.Redo();
             redoToolStripMenuItem.Enabled = false;
             undoToolStripMenuItem.Enabled = true;
+        }
+        
+
+
+        private void cutToolStripMenuItem1_Click_1(object sender, EventArgs e)
+        {
+            MainRichTextBox.Cut();
+        }
+
+        private void copyToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.Copy();
+        }
+
+        private void pasteToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.Paste();
+        }
+
+        private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectedText = "";
+        }
+
+        private void selectAllToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            MainRichTextBox.SelectAll();
         }
         #endregion
     }
