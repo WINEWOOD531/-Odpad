@@ -11,11 +11,14 @@ using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.Speech.Synthesis;
+using Image = iTextSharp.text.Image;
 
 namespace Odpad
 {
     public partial class MainNotepadFrm : Form
     {
+        string strImagePath;
+        public bool OriginalText = true;
         public string path;
         SpeechSynthesizer speech;
         private int indent = 10;
@@ -48,6 +51,16 @@ namespace Odpad
         private void MainRichTextBox_DragDrop(object sender, DragEventArgs e)
         {
             object filename = e.Data.GetData("FileDrop");
+            if (OriginalText == false)
+            {
+                DialogResult dialogResult = MessageBox.Show("Save the file before exiting?", "Save file", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    saveToolStripMenuItem.PerformClick();
+                    Dispose(true);
+                    Application.Exit();
+                }
+            }
             if (filename != null)
             {
                 var list = filename as string[];
@@ -103,6 +116,11 @@ namespace Odpad
             
         }
 
+        /// <summary>
+        /// Insert image in document
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void insertImageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             #region
@@ -135,7 +153,7 @@ namespace Odpad
                 {
                     try
                     {
-                        string strImagePath = dlg.FileName;
+                        strImagePath = dlg.FileName;
                         System.Drawing.Image img = System.Drawing.Image.FromFile(strImagePath);
                         Clipboard.SetDataObject(img);
                         DataFormats.Format df;
@@ -186,6 +204,7 @@ namespace Odpad
                 undoToolStripMenuItem.Enabled = false;
                 redoToolStripMenuItem.Enabled = false;
             }
+            OriginalText = false;
         }
 
         #region Font
@@ -403,6 +422,7 @@ namespace Odpad
                     this.Text = ofd.FileName;
                 }
             }
+            OriginalText = true;
             MessageToolStripStatusLabel1.Text = "File is Opened";
         }
 
@@ -574,11 +594,13 @@ namespace Odpad
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     iTextSharp.text.Document doc = new iTextSharp.text.Document(PageSize.A4.Rotate());
+                    iTextSharp.text.Image PNG = iTextSharp.text.Image.GetInstance(strImagePath);
                     try
                     {
                         PdfWriter.GetInstance(doc,new FileStream(sfd.FileName,FileMode.Create));
                         doc.Open();
                         doc.Add(new iTextSharp.text.Paragraph(MainRichTextBox.Text));
+                        doc.Add(PNG);
                     }
                     catch (Exception ex)
                     {
