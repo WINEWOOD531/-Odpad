@@ -861,6 +861,12 @@ namespace Odpad
             MainRichTextBox.SelectAll();
         }
         #endregion
+
+        private void openPDFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PDF_Reader_Form pdf = new PDF_Reader_Form();
+            pdf.Show();
+        }
     }
 
 }

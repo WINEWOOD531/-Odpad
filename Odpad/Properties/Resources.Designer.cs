@@ -373,6 +373,16 @@ namespace Odpad.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap PngItem_4997293 {
+            get {
+                object obj = ResourceManager.GetObject("PngItem_4997293", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap preferences_color_icon {
             get {
                 object obj = ResourceManager.GetObject("preferences-color-icon", resourceCulture);
