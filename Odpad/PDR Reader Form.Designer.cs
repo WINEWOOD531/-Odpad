@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PDF_Reader_Form));
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.pdfViewer1 = new Spire.PdfViewer.Forms.PdfViewer();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
@@ -59,6 +60,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1344, 687);
             this.Controls.Add(this.pdfViewer1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(2550, 2100);
             this.MinimumSize = new System.Drawing.Size(1360, 726);
             this.Name = "PDF_Reader_Form";

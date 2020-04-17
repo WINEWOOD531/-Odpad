@@ -18,7 +18,10 @@ namespace Odpad
     public partial class MainNotepadFrm : Form
     {
         string strImagePath;
-        public bool OriginalText = true;
+        //public bool OriginalText = true;
+        private bool isFileAlreadySaved;
+        private bool isFileDirty;
+        private string currOpenFileName;
         public string path;
         SpeechSynthesizer speech;
         private int indent = 10;
@@ -51,7 +54,7 @@ namespace Odpad
         private void MainRichTextBox_DragDrop(object sender, DragEventArgs e)
         {
             object filename = e.Data.GetData("FileDrop");
-            if (OriginalText == false)
+            if (isFileDirty)
             {
                 DialogResult dialogResult = MessageBox.Show("Save the file before exiting?", "Save file", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dialogResult == DialogResult.Yes)
@@ -91,8 +94,42 @@ namespace Odpad
 /// <param name="e"></param>
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (isFileDirty)
+            {
+                DialogResult result = MessageBox.Show("Do you want to save your changes?", "File Save", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                switch (result)
+                {
+                    case DialogResult.Yes:
+                        SaveFileMenu();
+                        ClearScreen();
+                        break;
+                    case DialogResult.No:
+                        //MainRichTextBox.Text = "";
+                        //this.Text = "Untitled - Odpad";
+                        //MessageToolStripStatusLabel1.Text = "New Document is created";
+                        ClearScreen();
+                        break;
+                }
+            }
+
+            else
+            {
+                MainRichTextBox.Text = "";
+                //MainRichTextBox.Clear();
+                this.Text = "Untitled - Odpad";
+                MessageToolStripStatusLabel1.Text = "New Document is created";
+            }
+            #region 
+            //MainRichTextBox.Text = "";
+            ////MainRichTextBox.Clear();
+            //this.Text = "Untitled - Odpad";
+            //MessageToolStripStatusLabel1.Text = "New Document is created";
+            #endregion
+        }
+        private void ClearScreen()
+        {
             MainRichTextBox.Text = "";
-            //MainRichTextBox.Clear();
+            this.Text = "Untitled - Odpad";
             MessageToolStripStatusLabel1.Text = "New Document is created";
         }
 
@@ -204,7 +241,8 @@ namespace Odpad
                 undoToolStripMenuItem.Enabled = false;
                 redoToolStripMenuItem.Enabled = false;
             }
-            OriginalText = false;
+
+            isFileDirty = true;
         }
 
         #region Font
@@ -420,78 +458,220 @@ namespace Odpad
                         MainRichTextBox.LoadFile(ofd.FileName, RichTextBoxStreamType.PlainText);
                     }
                     this.Text = ofd.FileName;
+
+                    isFileAlreadySaved = true;
+                    isFileDirty = false;
+                    currOpenFileName = ofd.FileName;
                 }
             }
-            OriginalText = true;
+            //OriginalText = true;
             MessageToolStripStatusLabel1.Text = "File is Opened";
         }
 
         private async void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            #region saving without image
-            //if (string.IsNullOrEmpty(path))
-            //{
-            //    using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "RTF files|*.rtf|Text documents| *.txt|All files|*.*", ValidateNames = true })
-            //    {
-            //        if (sfd.ShowDialog() == DialogResult.OK)
-            //        {//=========================Зберігає без кодування
-            //            //MainRichTextBox.SaveFile(sfd.FileName);
-            //            //this.Text = sfd.FileName;
-            //            //--------------------------------------------------------------
-            //            try
+            #region working
+            //        if (isFileAlreadySaved)
+            //        {
+            //            if (Path.GetExtension(currOpenFileName)==".rtf")
             //            {
-            //                path = sfd.FileName;
-            //                using (StreamWriter sw = new StreamWriter(sfd.FileName))
+            //                MainRichTextBox.SaveFile(currOpenFileName, RichTextBoxStreamType.RichText);
+            //            }
+
+            //            if (Path.GetExtension(currOpenFileName) == ".txt")
+            //            {
+            //                MainRichTextBox.SaveFile(currOpenFileName, RichTextBoxStreamType.PlainText);
+            //            }
+
+            //            isFileDirty = false;
+            //        }
+            //else {
+            //            if (isFileDirty)
+            //            {
+
+
+
+            //                #region saving without image
+            //                //if (string.IsNullOrEmpty(path))
+            //                //{
+            //                //    using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "RTF files|*.rtf|Text documents| *.txt|All files|*.*", ValidateNames = true })
+            //                //    {
+            //                //        if (sfd.ShowDialog() == DialogResult.OK)
+            //                //        {//=========================Зберігає без кодування
+            //                //            //MainRichTextBox.SaveFile(sfd.FileName);
+            //                //            //this.Text = sfd.FileName;
+            //                //            //--------------------------------------------------------------
+            //                //            try
+            //                //            {
+            //                //                path = sfd.FileName;
+            //                //                using (StreamWriter sw = new StreamWriter(sfd.FileName))
+            //                //                {
+            //                //                    await sw.WriteLineAsync(MainRichTextBox.Text);
+            //                //                }
+            //                //            }
+            //                //            catch (Exception ex)
+            //                //            {
+            //                //                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //                //            }
+            //                //        }
+            //                //    }
+            //                //}
+            //                //else
+            //                //{
+            //                //    try
+            //                //    {
+            //                //        using (StreamWriter sw = new StreamWriter(path))
+            //                //        {
+            //                //            await sw.WriteLineAsync(MainRichTextBox.Text);
+            //                //        }
+            //                //    }
+            //                //    catch (Exception ex)
+            //                //    {
+            //                //        MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //                //    }
+            //                //}
+            //                #endregion
+            //                using (SaveFileDialog dlg = new SaveFileDialog())
             //                {
-            //                    await sw.WriteLineAsync(MainRichTextBox.Text);
+            //                    dlg.Filter = "Rich text format|*.rtf";
+            //                    dlg.FilterIndex = 0;
+            //                    dlg.OverwritePrompt = true;
+            //                    if (dlg.ShowDialog() == DialogResult.OK)
+            //                    {
+            //                        try
+            //                        {
+            //                            MainRichTextBox.SaveFile(dlg.FileName, RichTextBoxStreamType.RichText);
+            //                        }
+            //                        catch (IOException exc)
+            //                        {
+            //                            MessageBox.Show("Error writing file: \n" + exc.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //                        }
+            //                        catch (ArgumentException exc_a)
+            //                        {
+            //                            MessageBox.Show("Error writing file: \n" + exc_a.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //                        }
+            //                        this.Text = Path.GetFileName(dlg.FileName) + " - Odpad";
+
+            //                        //isFileAlreadySaved = true;
+            //                        //isFileDirty = false;
+            //                        //currOpenFileName = dlg.FileName;
+            //                    }
             //                }
             //            }
-            //            catch (Exception ex)
+            //            else
             //            {
-            //                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //            }
+            //                MainRichTextBox.Clear();
+            //                this.Text = "Untitled - Odpad";
+            //                isFileDirty = false;
+            //            }  
             //        }
-            //    }
-            //}
-            //else
-            //{
-            //    try
-            //    {
-            //        using (StreamWriter sw = new StreamWriter(path))
-            //        {
-            //            await sw.WriteLineAsync(MainRichTextBox.Text);
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    }
-            //}
             #endregion
-            using (SaveFileDialog dlg = new SaveFileDialog())
+            SaveFileMenu();
+        }
+        private void SaveFileMenu()
+        {
+            if (isFileAlreadySaved)
             {
-                dlg.Filter = "Rich text format|*.rtf";
-                dlg.FilterIndex = 0;
-                dlg.OverwritePrompt = true;
-                if (dlg.ShowDialog() == DialogResult.OK)
+                if (Path.GetExtension(currOpenFileName) == ".rtf")
                 {
-                    try
+                    MainRichTextBox.SaveFile(currOpenFileName, RichTextBoxStreamType.RichText);
+                }
+
+                if (Path.GetExtension(currOpenFileName) == ".txt")
+                {
+                    MainRichTextBox.SaveFile(currOpenFileName, RichTextBoxStreamType.PlainText);
+                }
+
+                isFileDirty = false;
+            }
+            else
+            {
+                if (isFileDirty)
+                {
+
+
+
+                    #region saving without image
+                    //if (string.IsNullOrEmpty(path))
+                    //{
+                    //    using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "RTF files|*.rtf|Text documents| *.txt|All files|*.*", ValidateNames = true })
+                    //    {
+                    //        if (sfd.ShowDialog() == DialogResult.OK)
+                    //        {//=========================Зберігає без кодування
+                    //            //MainRichTextBox.SaveFile(sfd.FileName);
+                    //            //this.Text = sfd.FileName;
+                    //            //--------------------------------------------------------------
+                    //            try
+                    //            {
+                    //                path = sfd.FileName;
+                    //                using (StreamWriter sw = new StreamWriter(sfd.FileName))
+                    //                {
+                    //                    await sw.WriteLineAsync(MainRichTextBox.Text);
+                    //                }
+                    //            }
+                    //            catch (Exception ex)
+                    //            {
+                    //                MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //            }
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    try
+                    //    {
+                    //        using (StreamWriter sw = new StreamWriter(path))
+                    //        {
+                    //            await sw.WriteLineAsync(MainRichTextBox.Text);
+                    //        }
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //        MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //    }
+                    //}
+                    #endregion
+                    using (SaveFileDialog dlg = new SaveFileDialog())
                     {
-                        MainRichTextBox.SaveFile(dlg.FileName, RichTextBoxStreamType.RichText);
-                    }
-                    catch (IOException exc)
-                    {
-                        MessageBox.Show("Error writing file: \n" + exc.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    catch (ArgumentException exc_a)
-                    {
-                        MessageBox.Show("Error writing file: \n" + exc_a.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        dlg.Filter = "Rich text format|*.rtf";
+                        dlg.FilterIndex = 0;
+                        dlg.OverwritePrompt = true;
+                        if (dlg.ShowDialog() == DialogResult.OK)
+                        {
+                            try
+                            {
+                                MainRichTextBox.SaveFile(dlg.FileName, RichTextBoxStreamType.RichText);
+                            }
+                            catch (IOException exc)
+                            {
+                                MessageBox.Show("Error writing file: \n" + exc.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            catch (ArgumentException exc_a)
+                            {
+                                MessageBox.Show("Error writing file: \n" + exc_a.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            this.Text = Path.GetFileName(dlg.FileName) + " - Odpad";
+
+                            //isFileAlreadySaved = true;
+                            //isFileDirty = false;
+                            //currOpenFileName = dlg.FileName;
+                        }
                     }
                 }
+                else
+                {
+                    MainRichTextBox.Clear();
+                    this.Text = "Untitled - Odpad";
+                    isFileDirty = false;
+                }
             }
-
         }
 
+        /// <summary>
+        /// Function Save as 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (SaveFileDialog sfd = new SaveFileDialog() { Filter = "RTF files|*.rtf|Text documents| *.txt|All files|*.*", ValidateNames = true })
@@ -510,6 +690,11 @@ namespace Odpad
                     {
                         MessageBox.Show(ex.Message,"Message",MessageBoxButtons.OK,MessageBoxIcon.Error);
                     }
+                    this.Text = Path.GetFileName(sfd.FileName) + " - Odpad";
+
+                    isFileAlreadySaved = true;
+                    isFileDirty = false;
+                    currOpenFileName = sfd.FileName;
                 }
                 
                 
@@ -861,12 +1046,59 @@ namespace Odpad
             MainRichTextBox.SelectAll();
         }
         #endregion
-
+        
+        /// <summary>
+        /// OPEN PDF BUTTON
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void openPDFToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PDF_Reader_Form pdf = new PDF_Reader_Form();
-            pdf.Show();
+            pdf.ShowDialog();
         }
+
+        /// <summary>
+        /// Action when form is load
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainNotepadFrm_Load(object sender, EventArgs e)
+        {
+            isFileAlreadySaved = false;
+            isFileDirty = false;
+            currOpenFileName="";
+    }
+
+        /// <summary>
+        /// Show you dilog for saving file before exit Application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainNotepadFrm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            #region
+            if (isFileDirty)
+            {
+                DialogResult result = MessageBox.Show("Do you want to save your changes?", "File Save", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                switch (result)
+                {
+                    case DialogResult.Yes:
+                        SaveFileMenu();
+                        ClearScreen();
+                        break;
+                    case DialogResult.No:
+                        ClearScreen();
+                        break;
+                }
+            }
+            else
+            {
+                Application.Exit();
+            }
+            #endregion
+        }
+ 
     }
 
 }
